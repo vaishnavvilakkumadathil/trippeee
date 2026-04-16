@@ -1,0 +1,188 @@
+# User Types
+type User {
+    userId: ID!
+    email: String!
+    firstName: String!
+    lastName: String!
+    phoneNumber: String
+    createdAt: String!
+}
+
+type AuthPayload {
+    token: String!
+    user: User!
+    expiresIn: Long!
+}
+
+# Trip Types
+type Trip {
+    tripId: ID!
+    userId: String!
+    destination: String!
+    startDate: String!
+    endDate: String!
+    description: String
+    status: TripStatus!
+    createdAt: String!
+    updatedAt: String!
+}
+
+enum TripStatus {
+    PLANNED
+    ACTIVE
+    COMPLETED
+    CANCELLED
+}
+
+# Booking Types
+type Booking {
+    bookingId: ID!
+    tripId: String!
+    userId: String!
+    type: BookingType!
+    provider: String!
+    status: BookingStatus!
+    bookingDate: String!
+    details: String
+    cost: Float
+    createdAt: String!
+    updatedAt: String!
+    trip: Trip
+}
+
+enum BookingType {
+    FLIGHT
+    HOTEL
+    CAR_RENTAL
+    ACTIVITY
+}
+
+enum BookingStatus {
+    PENDING
+    CONFIRMED
+    CANCELLED
+    COMPLETED
+}
+
+# Notification Types
+type Notification {
+    notificationId: ID!
+    userId: String!
+    type: NotificationType!
+    title: String!
+    message: String!
+    read: Boolean!
+    createdAt: String!
+}
+
+enum NotificationType {
+    TRIP_REMINDER
+    BOOKING_CONFIRMATION
+    BOOKING_UPDATE
+    SYSTEM_ALERT
+}
+
+# Dashboard Type
+type UserDashboard {
+    user: User!
+    upcomingTrips: [Trip!]!
+    recentBookings: [Booking!]!
+    unreadNotifications: [Notification!]!
+    tripCount: Int!
+    bookingCount: Int!
+}
+
+# Input Types
+input RegisterInput {
+    email: String!
+    password: String!
+    firstName: String!
+    lastName: String!
+    phoneNumber: String
+}
+
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+input CreateTripInput {
+    userId: String!
+    destination: String!
+    startDate: String!
+    endDate: String!
+    description: String
+}
+
+input UpdateTripInput {
+    destination: String
+    startDate: String
+    endDate: String
+    description: String
+    status: TripStatus
+}
+
+input CreateBookingInput {
+    tripId: String!
+    userId: String!
+    type: BookingType!
+    provider: String!
+    bookingDate: String!
+    details: String
+    cost: Float
+}
+
+input UpdateBookingInput {
+    status: BookingStatus
+    details: String
+    cost: Float
+}
+
+# Queries
+type Query {
+    # User queries
+    me: User!
+    user(userId: ID!): User
+
+    # Trip queries
+    trip(tripId: ID!): Trip
+    trips(userId: String!): [Trip!]!
+    userTrips: [Trip!]!
+
+    # Booking queries
+    booking(bookingId: ID!): Booking
+    bookings(userId: String!): [Booking!]!
+    tripBookings(tripId: String!): [Booking!]!
+    userBookings: [Booking!]!
+
+    # Notification queries
+    notifications(userId: String!): [Notification!]!
+    userNotifications: [Notification!]!
+    unreadNotifications: [Notification!]!
+
+    # Dashboard
+    userDashboard: UserDashboard!
+}
+
+# Mutations
+type Mutation {
+    # User mutations
+    register(input: RegisterInput!): AuthPayload!
+    login(input: LoginInput!): AuthPayload!
+
+    # Trip mutations
+    createTrip(input: CreateTripInput!): Trip!
+    updateTrip(tripId: ID!, input: UpdateTripInput!): Trip!
+    deleteTrip(tripId: ID!): Boolean!
+
+    # Booking mutations
+    createBooking(input: CreateBookingInput!): Booking!
+    updateBooking(bookingId: ID!, input: UpdateBookingInput!): Booking!
+    deleteBooking(bookingId: ID!): Boolean!
+
+    # Notification mutations
+    markNotificationAsRead(notificationId: ID!): Notification!
+    markAllNotificationsAsRead: Boolean!
+}
+
+scalar Long

@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: graphql-orchestrator
+
+  graphql:
+    graphiql:
+      enabled: true
+      path: /graphiql
+    path: /graphql
+    schema:
+      printer:
+        enabled: true
+
+  security:
+    user:
+      name: admin
+      password: admin
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+jwt:
+  secret: your-secret-key-should-be-at-least-256-bits-long-for-hs256-algorithm-security
+  expiration: 86400000
+
+service:
+  user-service:
+    name: user-service
+    base-path: /api/users
+  trip-service:
+    name: trip-service
+    base-path: /api/trips
+  booking-service:
+    name: booking-service
+    base-path: /api/bookings
+  notification-service:
+    name: notification-service
+    base-path: /api/notifications
+
+logging:
+  level:
+    com.booking: DEBUG
+    org.springframework.graphql: DEBUG
+    org.springframework.cloud: DEBUG

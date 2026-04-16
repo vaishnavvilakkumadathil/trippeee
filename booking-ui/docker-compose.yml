@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  booking-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_GRAPHQL_URL=http://localhost:8080/graphql
+    networks:
+      - booking-network
+    restart: unless-stopped
+
+networks:
+  booking-network:
+    external: true
